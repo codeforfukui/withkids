@@ -8,12 +8,12 @@
     margin: 0.5rem 0 1rem 0;
 }
 .navbar-color{
-    background-color: #00BFA5;	
+    background-color: #e11e74;	
 } 
 .collapsible-header {
     display: block;
     cursor: pointer;
-	color:#00BFA5;
+	color: #e11e74;
     min-height: 8rem;
     line-height: 8rem;
     padding: 0 2rem 0 2rem;
@@ -28,7 +28,7 @@
     display: none;
     font-size: 1.2rem;
 	color:#fff;
-    background-color: #00BFA5;
+    background-color: #e11e74;
     border-bottom: 1px solid #ddd;
     box-sizing: border-box;
     margin: 0;
@@ -59,7 +59,7 @@
 	background-position: center center;
 }
 .collapsible-header i {
-    color: #00BFA5;
+    color: #e11e74;
     font-size: 5rem;
     line-height: 5rem;
     display: block;
