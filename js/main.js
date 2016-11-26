@@ -44,7 +44,7 @@ var dummy = [
 	},
 ];
 
-var addItem = function(s, img, list, distance, icon) {
+var addItem = function(s, img, list, subtitle, icon) {
 	/*
 	<li id="day0"><div class="collapsible-header"><span class="days"></span><span class="gcal"></span></div></li>
 	*/
@@ -86,12 +86,11 @@ var addItem = function(s, img, list, distance, icon) {
 	div.appendChild(span);
 	span.textContent = s;
 	
-	if (distance) {
+	if (subtitle) {
 		var span3 = create("span");
-		span3.className = "distance";
+		span3.className = "subtitle";
 		span.appendChild(span3);
-		//span3.textContent = fixfloat(distance, 2) + "km";
-		span3.innerHTML = "&nbsp;";
+		span3.textContent = subtitle;
 	}
 	
 	if (list) {
@@ -99,7 +98,7 @@ var addItem = function(s, img, list, distance, icon) {
 		div2.className = "collapsible-body";
 		li.appendChild(div2);
 		for (var i = 0; i < list.length; i++) {
-			if (list[i]) {
+			if (list[i] && list[i].trim().length > 0) {
 				var d = create("div");
 				d.innerHTML = list[i];
 				div2.appendChild(d);
@@ -113,7 +112,7 @@ var getLinkDirections = function(lat1, lng1, lat2, lng2) {
 	return "https://www.google.com/maps/dir/" + lat1 + "," + lng1 + "/" + lat2 + "," + lng2;
 };
 var getStaticMap = function(lat, lng, lat2, lng2) {
-	var APIKEY = "AIzaSyCQZtmjVkn8wWuojY1PL96W5yg7u4uMs0k";
+	var APIKEY = "AIzaSyD3infBvJeAdiM6KqqBTS0i5jCnzIDWp8o";
 	var s = "https://maps.googleapis.com/maps/api/staticmap?";
 	s += "key=" + APIKEY + "&";
 	s += "size=600x300&scale=2&maptype=roadmap&";
@@ -419,6 +418,7 @@ var showItems = function(lat, lng) {
 		}
 		var emergencymode = false;
 		var emelink = null;
+		/*
 		get("flip").onclick = function() {
 			emergencymode = !emergencymode;
 			var cs = get("items").children;
@@ -458,6 +458,7 @@ var showItems = function(lat, lng) {
 				emelink.disabled = true;
 			}
 		};
+		*/
 	});
 };
 var getImageLink = function(img) {
@@ -483,6 +484,68 @@ var addItemSpot = function(d, lat, lng) {
 		getLink(getDataSrc(d.type), d.s),
 	], d.distance, icon);
 };
+var getTSV = function(url, callback) {
+	getHTTP(url, function(data) {
+		var ss = data.split('\n');
+		var list = [];
+		for (var i = 0; i < ss.length; i++) {
+			var ss2 = ss[i].split('\t');
+			list.push(ss2);
+		}
+		callback(list);
+	});
+};
+var getHTTP = function(url, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState == 4) {
+			if (xhr.status == 0) {
+				alert("通信に失敗しました。再読込してください。");
+			} else {
+				if (xhr.status >= 200 && xhr.status < 300 || xhr.status == 304) {
+					//alert("受信:" + xhr.responseText);
+					callback(xhr.responseText);
+				} else {
+					alert("通信に失敗しました。再読込してください。<br>" + xhr.status);
+				}
+			}
+		}
+	};
+	xhr.open("GET" , url);
+	var senddata = null; // "送信テスト";
+	xhr.send(senddata);
+};
+
+var dataexp;
+var dataikeda;
+var datacate = 1;
+
+var getIkedaPOI = function(name) {
+	/*
+	s: http://odp.jig.jp/rdf/jp/go/soumu/kcloud/kanko_18382#18382KANKO0009964_civicpoi
+	name: 寺谷大仏
+	desc: 西光寺28世住職、徳井尭譲上人により建立された、高さ10メートルあまりの阿弥陀如来像。明治時代中期建立。
+	img: https://www.chiikinogennki.soumu.go.jp/k-cloud-api/v001/kanko/view/18382KANKO0009964/base/18/382/18382KANKO0009964001.jpg
+	lat: 35.897385
+	lng: 136.342885
+	type: http://purl.org/jrrk#CivicPOI
+			*/
+	for (var i = 0; i < dataikeda.length; i++) {
+		if (dataikeda[i].name == name)
+			return dataikeda[i];
+	}
+	return null;
+};
+
+var loadExperience = function() {
+	var url = "data/taiken.tsv";
+	getTSV(url, function(data) {
+//		dump(data);
+		dataexp = data;
+		selectAge(datacate);
+	});
+};
+
 
 //localStorage.setItem("withkids-init", "0");
 $(function() {
@@ -494,6 +557,14 @@ $(function() {
 		localStorage.setItem("withkids-init", "1");
 	};
 	
+	getSpotIkeda(function(data) {
+		dataikeda = data;
+//		dump(data);
+		loadExperience();
+	});
+	
+	
+	/*
 	var hash = document.location.hash;
 	if (hash.length > 1) {
 		var pos = hash.substring(1).split(",");
@@ -502,6 +573,9 @@ $(function() {
 			return;
 		}
 	}
+	*/
+	
+	/*
 	if (!gpson) {
 		ignoreGPS();
 		return;
@@ -509,6 +583,7 @@ $(function() {
 	
 	get("logo-container").onclick = loadItem;
 	loadItem();
+	*/
 });
 var loadItem = function() {
 	clear("items");
@@ -539,8 +614,146 @@ var loadItem = function() {
 var addToHome = function() {
 	alert("「ホーム画面へ追加」すると「WithKids」に、すぐにアクセスできますよ！");
 };
-var selectAge = function(min, max) {
-	alert(min + " " + max);
+var selectAge = function(cate) {
+	if (!dataexp)
+		return;
+		/*
+			cate
+				0: 0-3
+				1: 4-10
+				2: 11-
+		*/
+		/*
+		0: 遊び内容
+		1: 対象年齢最低
+		2: 対象年齢最高
+		3: 0～3歳優先順位
+		4: 4～10歳優先順位
+		5: 11歳～優先順位
+		6: 場所
+		7: 料金
+		8: 単位
+		9: 予約
+		10: 備考
+		*/
+	if (cate == undefined) {
+		cate = datacate + 1;
+		if (cate == 3)
+			cate = 0;
+	}
+	datacate = cate;
+	var capcate = [
+		"0才〜3才",
+		"4才〜10才",
+		"11才〜"
+	];
+	get("logo-container").textContent = "WithKids / " + capcate[cate];
+//	alert(min + " " + max);
+	clear("items");
+	var icon = null;
+	var list = [];
+	// cate 0: 0-3, 1:4-10, 2:11-
+	for (var i = 1; i < dataexp.length; i++) {
+		var item = dataexp[i];
+		var tmin = parseInt(item[1]);
+		var tmax = parseInt(item[2] ? item[2] : 100);
+		var flg = false;
+		if (cate == 0) { // 0-3
+			if (tmin <= 3) { // 3才以下でもokなもの
+				flg = true;
+			}
+		} else if (cate == 1) {
+			if (tmin <= 10 && tmax >= 4) { // 10才以下でもokなもの
+				flg = true;
+			}
+		} else if (cate == 2) {
+			if (tmax >= 11) { // 10才
+				flg = true;
+			}
+		}
+		if (flg) {
+			for (var j = 0; j < list.length; j++) {
+				if (list[j][0] == item[0]) {
+					flg = false;
+					list[j].push(item);
+					break;
+				}
+			}
+		}
+		if (flg) {
+			list.push(item);
+		}
+	}
+	list.sort(function(a, b) {
+		var ac = a[3 + cate];
+		var bc = b[3 + cate];
+		if (ac.length == 0)
+			ac = null;
+		if (bc.length == 0)
+			bc = null;
+		if (ac == null && bc == null)
+			return 0;
+		if (ac == null)
+			return 1;
+		if (bc == null)
+			return -1;
+		return parseInt(ac) - parseInt(bc);
+	});
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var d = {
+			name: item[0],
+			link: null,
+			img: null,
+			place: item[6],
+			unit: item[8],
+			reserve: item[9],
+			other: item[10],
+			point: item[3 + cate]
+		};
+		var sprice = [];
+		var k = [];
+		k.push(item);
+		for (var j = 11; j < item.length; j++) {
+			k.push(item[j]);
+		}
+		for (var j = 0; j < k.length; j++) {
+			var it = k[j];
+			var min = it[1];
+			var max = it[2];
+			var price = it[7];
+			if (price == 0)
+				price = "無料";
+			else
+				price = d.unit + price + "円";
+			var s = "";
+			if (min == max)
+				s = min + "才";
+			else
+				s = min + "才〜" + (max ? max + "才" : "");
+			s += "（" + price + "）";
+			sprice.push(s);
+		}
+		sprice = sprice.join("");
+		var poi = getIkedaPOI(d.place);
+//		alert(poi);
+		
+		var lat = defpos[0];
+		var lng = defpos[1];
+		addItem(d.name/*.substring(0, 6)*/, d.img, [
+			getLink(d.name + (d.link ? '<i class="material-icons">home</i>' : ""), d.link),
+			getImageLink(poi ? poi.img : null),
+			d.place,
+			"料金：" + sprice,
+//			"優先順：" + d.point,
+			d.reserve == "要" ? "予約必要" : null,
+			d.other,
+			d.desc,
+			d.descen,
+			poi && poi.lat ? getHTMLMap(lat, lng, poi.lat, poi.lng) : null,
+			getLink(getDataSrc(d.type), d.s),
+		], sprice, icon);
+	}
 };
 var showSplash = function() {
 	get("splash").style.display = "block";
