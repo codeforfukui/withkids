@@ -1,11 +1,9 @@
-
-
 var map;
     
 function initMap(){
 
     var mapId ={
-	zoom: 5,
+	zoom: 13,
 	center: new google.maps.LatLng(35.890358,136.344221)
     };
 
@@ -32,7 +30,7 @@ function setMaker(name,lat, lng, info, link){
     if(info){
 	s += '<div class="marker">'+info+'</div>';
     }
-    
+
     var infoWindow = new google.maps.InfoWindow({
 	content: s
              
@@ -47,3 +45,21 @@ function setMaker(name,lat, lng, info, link){
     });
 }
  
+function setMakerVM(location,lat, lng){
+
+    var latlng = new google.maps.LatLng(lat,lng);
+    var marker = new google.maps.Marker({
+	position: latlng,
+	map: map
+    });
+
+    var s = location; 
+    if(s){
+
+   var infoWindow = new google.maps.InfoWindow({
+	content: s
+             
+    });
+
+    }
+}
