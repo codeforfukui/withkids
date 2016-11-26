@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8"/ >
+  <title>公共クラウドサンプル</title>
+  </head>
+  <body> 
+  <p>Google Map Test</p>
+  <div id="map" style="width:1000px; height:500px"></div>
+  <input id="search" type="button" value="公共クラウドのデータ取得"></inout>
+  <script type="text/javascript" src="testMap.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script type="application/javascript"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3infBvJeAdiM6KqqBTS0i5jCnzIDWp8o&callback=initMap" type="text/javascript"></script>
+  <script>
+     $(function(){
+
+     $('#search').click(function(){
+
+     /*
+     var genre = "公園";
+     var eURI = encodeURI(genre);
+
+
+     var URL = "https://www.chiikinogennki.soumu.go.jp/k-cloud-api/v001/kanko/"+eURI+"/json?"+encodeURI("limit=10");
+     */
+
+    var lat = 35.960442;
+    var lng = 136.204580;
+
+    var dll = 10;
+    var latmin = lat - dll;
+    var latmax = lat + dll;
+    var lngmin = lng - dll;
+    var lngmax = lng + dll;  
+
+    var baseurl = "https://sparql.odp.jig.jp/data/sparql";
+     
+    var type = "http://odp.jig.jp/odp/1.0#TourSpot";
+     
+    var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+	     "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+	     "prefix jrrk: <http://purl.org/jrrk#>\n" +
+	     "select ?s ?name ?lat ?lng ?desc ?link ?img{\n" + 
+	          "graph ?graph {\n" + 
+		  "?s rdf:type <" + type + ">;\n" +
+		  "rdfs:label ?name;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		  "optional { ?s <http://schema.org/description> ?desc }\n" +
+		  "optional { ?s <http://schema.org/url> ?link }\n" +
+		  "optional { ?s <http://schema.org/image> ?img}\n" +
+		  "filter(?lat < " + latmax + " && ?lat > " + latmin + " && ?lng < " + lngmax + " && ?lng > " + lngmin + ")\n" +
+			"filter(lang(?name) = 'ja')\n" +
+			"}\n" +
+		"}";
+     
+
+     //var tsName[];
+
+     var url = querySPARQL(baseurl,q,"?");
+		       
+     $.getJSON(url,function(data){
+
+		       var  items = data.results.bindings;
+		       //alert(items.length);
+
+          for(i=0; i<items.length; i++){
+
+	       var temp = items[i];
+               var dd =[]   
+
+	       for(var n in temp){
+                   dd[n] = temp[n].value; 
+	       }
+	   //console.log(dd)
+
+     
+          setMaker(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
+
+          }
+
+/*		       
+     for(var i=0; i<data.tourspots.length; i++){
+
+	alert(data.tourspots[i].name.name1.written);				   
+      //tsName[i] = data.tourspots[i].name.name1.written;
+        '<th>'+data.tourspots[i].name.name1.written+'</th>'			     
+     }
+*/     
+     });
+     });
+  });
+
+var querySPARQL = function(baseurl, q, callback) {
+	var url = baseurl + "?query=" + encodeURIComponent(q) + "&output=json";
+	url += "&callback=?";
+       //jsonp(url);
+       return url;					   
+};
+					   
+   </script> 
+   </body>
+</html>
