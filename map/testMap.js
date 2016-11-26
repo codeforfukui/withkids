@@ -11,7 +11,7 @@ function initMap(){
 }
 
 /*公共クラウドの全国データ*/
-function setMaker(name,lat, lng, info, link){
+function setMarkerTS(name,lat, lng, info, link){
 
     var latlng = new google.maps.LatLng(lat,lng);
     var marker = new google.maps.Marker({
@@ -41,56 +41,8 @@ function setMaker(name,lat, lng, info, link){
     });
 }
 
-/*自販機マーカー用*/
-function setMakerVM(location,lat, lng){
-
-    var latlng = new google.maps.LatLng(lat,lng);
-    var marker = new google.maps.Marker({
-	position: latlng,
-	map: map
-    });
-
-    var s = location; 
-
-    var infoWindow = new google.maps.InfoWindow({
-	content: s
-     });
-    
-    google.maps.event.addListener(marker,'mouseover',function(){
-	infoWindow.open(map, marker);
-    });
-
-    google.maps.event.addListener(marker,'mouseout',function(){
-	infoWindow.close();
-    });
-
-}
-/*ガソリンスタンドマーカー用*/
-function setMarkerSS(label,lat, lng){
-
-    var latlng = new google.maps.LatLng(lat,lng);
-    var marker = new google.maps.Marker({
-	position: latlng,
-	map: map
-    });
-
-    var s = label; 
-
-    var infoWindow = new google.maps.InfoWindow({
-	content: s
-     });
-    
-    google.maps.event.addListener(marker,'mouseover',function(){
-	infoWindow.open(map, marker);
-    });
-
-    google.maps.event.addListener(marker,'mouseout',function(){
-	infoWindow.close();
-    });
-
-}
-/*バス停マーカー用*/
-function setMarkerBR(label,lat, lng){
+/*名称と緯度・経度のみ表示*/
+function setMarker(label,lat, lng){
 
     var latlng = new google.maps.LatLng(lat,lng);
     var marker = new google.maps.Marker({

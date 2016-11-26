@@ -1,12 +1,21 @@
-<!DOCTYPE html>
+<!DOCTlYPE html>
 <html>
   <head>
   <meta charset="utf-8"/ >
   <title>Ikeda Town Spots</title>
   </head>
-  <body> 
-  <p>池田町のスポット紹介 </p>
-  <div id="map" style="width:100vh; height:50vh"></div>
+  <body style="background:#E6E6E6"> 
+  <p >池田町のスポット紹介 </p>
+  <div id="map" style="width:100%; height:70%"></div>
+  <tr>
+  <td style="width:15%; height:20%;">観光情報(図？)</td>
+　<td style="width:15%; height:20%;">自販機(図？)</td>
+  <td style="width:15%; height:20%;">ガソリンスタンド(図？)</td>
+  <td style="width:15%; height:20%;">バスストップ(図？)</td>
+  <td style="width:15%; height:20%;">避難所(図？)</td>
+  <td style="width:15%; height:20%;">公共トイレ(図？)</td>
+  <td style="width:15%; height:20%;">AED設置場所(図？)</td>
+  </tr>
   <script type="text/javascript" src="testMap.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script type="application/javascript"></script>
@@ -17,16 +26,20 @@ $(document).ready(function(){
     var baseurl = "https://sparql.odp.jig.jp/data/sparql";
      
 //   var type = "http://odp.jig.jp/odp/1.0#TourSpot";
-//   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
+   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
 //   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
-     var type = "http://purl.org/jrrk#BusRoute";
+//     var type = "http://purl.org/jrrk#BusStop";
+//     var type = "http://purl.org/jrrk#EmergencyFacility";
+//     var type = "http://purl.org/jrrk#PublicToilet";
+//     var type = "http://purl.org/jrrk#AED";
+//     var type = "?type";
 
      var url = querySPARQL(baseurl, setQuery(type), "?");
 
      $.getJSON(url,function(data){
 
      var  items = data.results.bindings;
- //     alert(items.length);
+     alert(items.length);
 
           for(i=0; i<items.length; i++){
 
@@ -36,18 +49,30 @@ $(document).ready(function(){
 	       for(var n in temp){
                    dd[n] = temp[n].value; 
 	       }
-	   console.log(dd)
+	  console.log(dd)
 
      if(getType(type)=="kc")				   
-	   setMaker(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
+         setMarkerTS(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
+     else if(getType(type) == "vm") //自販機だけlabelがlocation
+         setMarker(dd.location, dd.lat,dd.lng);
+     else
+         setMarker(dd.label, dd.lat,dd.lng);			   				   
+/*				   
      if(getType(type)=="vm")
            setMakerVM(dd.location,dd.lat,dd.lng);
      if(getType(type)=="ss")
            setMarkerSS(dd.label,dd.lat,dd.lng);
-     if(getType(type)=="br")
+     if(getType(type)=="bs")
            setMarkerBR(dd.label,dd.lat,dd.lng);
-				   
-          }
+     if(getType(type)=="ef")
+           setMarkerBR(dd.label,dd.lat,dd.lng);
+     if(getType(type)=="pt")
+           setMarkerBR(dd.label,dd.lat,dd.lng);
+     if(getType(type)=="aed")
+           setMarkerBR(dd.label,dd.lat,dd.lng);
+
+  */
+         }				   
      });
  });
 
@@ -63,21 +88,41 @@ var getType = function(type) {
 		return "kc";
 	if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
 		return "vm";
-	if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
+	if (type == "http://odp.jig.jp/odp/1.0#ServiceStationw")
 		return "ss";
-	if (type == "http://purl.org/jrrk#BusRoute")
-		return "br";
+	if (type == "http://purl.org/jrrk#BusStop")
+		return "bs";
 	if (type == "http://purl.org/jrrk#EmergencyFacility")
 		return "ef";
 	if (type == "http://purl.org/jrrk#PublicToilet")
 		return "pt";
 	if (type == "http://purl.org/jrrk#AED")
 		return "aed";
+        if (type == "?type")
+		return "?type"		   
         return type;
 };
 
 var setQuery = function(type){
 
+ if(getType(type) == "?type"){
+
+    var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+            "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+	    "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+            "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+            "select ?s ?location ?label ?lat ?lng ?desc {\n" + 
+	          "?s rdf:type " + type + ";\n" +
+	          "odp:location ?location;\n" +
+               	  "rdfs:label ?label;\n" +
+        	  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+         	  "optional { ?s <http://schema.org/description> ?desc }\n" +
+		  "filter(?type=<http://odp.jig.jp/odp/1.0#TourSpot> || ?type=<http://purl.org/jrrk#CivicPOI> || ?type=<http://odp.jig.jp/odp/1.0#VendingMachine> || ?type=<http://odp.jig.jp/odp/1.0#ServiceStation> || ?type=<http://purl.org/jrrk#BusStop> || ?type=<http://purl.org/jrrk#PublicToilet> || ?type=<http://purl.org/jrrk#AED>)\n"+
+		"}";
+ 
+ }
+				   
  if(getType(type) == "kc"){
 
      var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -137,10 +182,47 @@ var setQuery = function(type){
 	          "rdfs:label ?label;\n" +
 		  "geo:lat ?lat;\n" +
 		  "geo:long ?lng.\n" +
-                  "filter(lang(?name) = 'ja')\n" +		   
 		"}";
  }
-				   
+ if(getType(type) == "ef"){
+
+    var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+             "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?label ?lat ?lng {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "rdfs:label ?label;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		"}";
+ }
+ if(getType(type) == "pt"){
+
+    var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+             "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?label ?lat ?lng {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "rdfs:label ?label;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		"}";
+  }
+ if(getType(type) == "aed"){
+
+    var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+             "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?label ?lat ?lng {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "rdfs:label ?label;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		"}";
+ }
   alert(q); 
   return q;				   
 }
