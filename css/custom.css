@@ -7,7 +7,7 @@
     border-left: 1px solid #ddd;
     margin: 0.5rem 0 1rem 0;
 }
-.navbar-color{
+.navbar-color {
     background-color: #e13b84;	
 } 
 .collapsible-header {
@@ -66,6 +66,7 @@
     display: block;
 	position: absolute;
 	right: -1rem;
+	z-index: 1;
 	background-color: white;
 	border-top: 1.7rem white solid;
 	border-left: 1rem white solid;

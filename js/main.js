@@ -740,7 +740,9 @@ var selectAge = function(cate) {
 		
 		var lat = defpos[0];
 		var lng = defpos[1];
-		addItem(d.name/*.substring(0, 6)*/, d.img, [
+		var img = poi && poi.img && poi.img.startsWith("https://") ? poi.img : null;
+		// d.img
+		addItem(d.name/*.substring(0, 6)*/, img, [
 			getLink(d.name + (d.link ? '<i class="material-icons">home</i>' : ""), d.link),
 			getImageLink(poi ? poi.img : null),
 			d.place,
