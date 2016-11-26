@@ -6,8 +6,8 @@ var maxlen = 30;
 var dllpoi = 0.1;
 var dllemr = 0.01;
 
-var gpson = true;
-//var gpson = false;
+//var gpson = true;
+var gpson = false;
 
 var localdebug = true;
 var localdebug = false;
@@ -89,7 +89,8 @@ var addItem = function(s, img, list, distance, icon) {
 		var span3 = create("span");
 		span3.className = "distance";
 		span.appendChild(span3);
-		span3.textContent = fixfloat(distance, 2) + "km";
+		//span3.textContent = fixfloat(distance, 2) + "km";
+		span3.innerHTML = "&nbsp;";
 	}
 	
 	if (list) {
@@ -248,7 +249,82 @@ var getNearTypesWithGeo = function(types, lat, lng, dll, size, callback, order) 
 	q = q.replace(/\$LAT_MIN\$/g, latmin);
 	q = q.replace(/\$LNG_MAX\$/g, lngmax);
 	q = q.replace(/\$LNG_MIN\$/g, lngmin);
-		
+	
+	var ts = [];
+	for (var i = 0; i < types.length; i++)
+		ts[i] = "?type=<" + types[i] + ">";
+	var filter = "filter(" + ts.join(" || ") + ")\n";
+	q = q.replace(/\$FILTER\$/g, filter);
+	
+//	prompt(q);
+	
+	if (localdebug) {
+		callback(dummy);
+	} else {
+//		prompt(q);
+		var baseurl = "https://sparql.odp.jig.jp/data/sparql";
+		querySPARQL(baseurl, q, function(data) {
+			callback(toList(data));
+		});
+	}
+};
+var getSpotIkeda = function(callback) {
+	var q = f2s(function() {/*
+		prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+		prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+		prefix schema: <http://schema.org/>
+		select ?s ?name ?desc ?descen ?link ?img ?lat ?lng ?type {
+			?s rdf:type ?type;
+				rdfs:label ?name;
+				<http://purl.org/jrrk#address> ?address;
+				geo:lat ?lat;
+				geo:long ?lng.
+			optional { ?s <http://schema.org/image> ?img }
+			optional {
+				?s <http://schema.org/description> ?desc.
+				filter(lang(?desc)="$LANG$")
+			}
+			optional {
+				?s <http://schema.org/description> ?descen.
+				filter(lang(?descen)="en")
+			}
+			optional { ?s <http://schema.org/url> ?link }
+			$FILTER$
+			filter(lang(?name)="$LANG$")
+			filter(regex(?address, "福井県今立郡池田町"))
+		} $ORDER$ limit $SIZE$
+	*/});
+	/*
+	filter(?type=<http://odp.jig.jp/odp/1.0#TourSpot>)
+	filter(?type=<http://odp.jig.jp/odp/1.0#TourSpot> || ?type=<http://purl.org/jrrk#CivicPOI>)
+	
+	filter(?type=<http://odp.jig.jp/odp/1.0#TourSpot> || ?type=<http://purl.org/jrrk#CivicPOI> || ?type=<http://purl.org/jrrk#EmergencyFacility>)
+	*/
+	
+	var size = 200;
+	var order = null;
+	if (!order)
+		order = "order by rand()";
+//	if (!order)
+//		order = "";
+	q = q.replace(/\$ORDER\$/g, order);
+	q = q.replace(/\$SIZE\$/g, size);
+//	q = q.replace(/\$TYPE\$/g, type);
+	q = q.replace(/\$LANG\$/g, "ja");
+	/*
+	q = q.replace(/\$LAT_MAX\$/g, latmax);
+	q = q.replace(/\$LAT_MIN\$/g, latmin);
+	q = q.replace(/\$LNG_MAX\$/g, lngmax);
+	q = q.replace(/\$LNG_MIN\$/g, lngmin);
+	*/
+	var typepoi = [
+		"http://purl.org/jrrk#CivicPOI",
+		"http://odp.jig.jp/odp/1.0#TourSpot"
+	];
+	var types = typepoi;
+	
 	var ts = [];
 	for (var i = 0; i < types.length; i++)
 		ts[i] = "?type=<" + types[i] + ">";
@@ -282,7 +358,7 @@ var toList = function(data) {
 };
 
 var ignoreGPS = function() {
-	alert("位置が取得できません。\n" + defpos[2] + "にいるとして調べます");
+//	alert("位置が取得できません。\n" + defpos[2] + "にいるとして調べます");
 	showItems(defpos[0], defpos[1]);
 };
 var getDistance = function(lat1, lng1, lat2, lng2) {
@@ -297,7 +373,8 @@ var getDistance = function(lat1, lng1, lat2, lng2) {
 // material icon
 // report, new_releases, explicit, error, error_outline, warning, announcement
 var showItems = function(lat, lng) {
-	getNearWithGeo(lat, lng, maxlen, function(data) {
+//	getNearWithGeo(lat, lng, maxlen, function(data) {
+	getSpotIkeda(function(data) {
 		clear("items");
 		//		dump(data);
 		var names = {};
@@ -406,13 +483,13 @@ var addItemSpot = function(d, lat, lng) {
 	], d.distance, icon);
 };
 
-//localStorage.setItem("akijikan-init", "0");
+//localStorage.setItem("withkids-init", "0");
 $(function() {
-	if ("1" != localStorage.getItem("akijikan-init")) {
+	if ("1" != localStorage.getItem("withkids-init")) {
 		get("splash").style.display = "block";
 		get("splash").onclick = function() {
 			get("splash").style.display = "none";
-			localStorage.setItem("akijikan-init", "1");
+			localStorage.setItem("withkids-init", "1");
 		};
 	}
 	

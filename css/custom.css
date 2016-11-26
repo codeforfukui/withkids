@@ -55,8 +55,9 @@
 	border-bottom: 2rem white solid;
 	width: 7rem;
 	height: 9rem;
-	background-size: auto 80%;
+	background-size: auto 100%;
 	background-position: center center;
+	background-repeat: no-repeat;
 }
 .collapsible-header i {
     color: #e13b84;
