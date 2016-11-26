@@ -1,7 +1,8 @@
-##AKIJIKAN
-アキジカン  
-https://howml.github.io/akijikan/  
+##WithKids
+ウィズキッズ
+https://codeforfukui.github.io/withkids/  
 
 ##スペシャルサンクス
-AKIJIKANは、[OGARUCO](http://ogaruco.net/)をベースに制作しました
-CfSの川人さん(aka [ダッピスタジオ](http://www.dappi.jp))さんに多大なる感謝を
+WithKidsは、[OGARUCO](http://ogaruco.net/)をベースに制作された、  
+[AKIJIKAN](https://github.com/howml/akijikan/)をベースに制作されました。  
+CfSの川人さん(aka [ダッピスタジオ](http://www.dappi.jp))に多大なる感謝を申し上げます。

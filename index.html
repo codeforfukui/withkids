@@ -25,14 +25,12 @@
 			<img src=img/icon_emergency.png class=emergency_icon id="flip"/>
 			<a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>	
 			<ul id="slide-out" class="side-nav fixed">
-				<li><div class="userView">
-					<img class="background" width="300px" height="300px" src="img/navimage.png">
-					<a href="https://www.facebook.com/howml/"><img class="circle" src="img/howml.png"></a>
-					<span class="white-text name">WithKids</span>
-				</div></li>
-				<li><a class="waves-effect" href="index.html">WithKids</a></li>
-				<li><a class="waves-effect" href="about.html">ウィズキッズとは</a></li>
-				<li><a class="waves-effect" href="bkmark.html">ホームに追加しよう!</a></li>
+				<li><div class="userView"></div></li>
+				<li><a class="waves-effect" href="javascript:selectAge(0,3)">0〜3歳</a></li>
+				<li><a class="waves-effect" href="javascript:selectAge(4,10)">4〜10歳</a></li>
+				<li><a class="waves-effect" href="javascript:selectAge(11,100)">11歳〜</a></li>
+				<li><a class="waves-effect" href="javascript:showSplash()">ウィズキッズとは</a></li>
+				<li><a class="waves-effect" href="javascript:addToHome()">ホームに追加しよう!</a></li>
 			</ul>
 		</div> 
 	</nav>
@@ -45,18 +43,19 @@
 	<div id="splash">
 		<div id="mobile">
 			<h3>WithKidsとは</h3>
-			『忙しいビジネスマンの心の止まり木』<br>
-	        <br>
-			出張先での打ち合わせまでの数時間、<br>
-			ちょっと観光してみませんか？<br>
-			<br>
-			右上の避難アイコンで、<br>
-			最寄りの避難所のチェックができます。<br>
-			<br>
+			家族でおでかけする方向けの観光案内アプリです。<br><br>
+			年齢別アクティビティーをすばやく表示！
+			<br><br>
 			<a href=img/flyer.jpg target=_blank>
 				<img src=img/flyer.jpg width=20%>
-			</a>
-		</div>
+			</a><br>
+			<br>
+			<a href=https://github.com/codeforfukui/withkids/ target=_blank>WithKids</a> MIT License (C)2016 IKEDA-A team<br>
+			<a href=https://github.com/howml/akijikan/ target=_blank>AKIJIKAN</a> MIT License (C)2016 <a href=http://howml.org/ target=_blank>ハウモリC4M</a><br>
+			<a href=http://ogaruco.net/ target=_blank>OGARUCO</a> MIT License (C)2016 <a href=http://howml.org/ target=_blank>ハウモリC4M</a><br>
+			<a href=http://materializecss.com/ target=_blank>Materialize</a> MIT License (C)2014 <a href=http://materializecss.com/ target=_blank>Materialize</a><br>
+			base design <a href=http://ogaruco.net/ target=_blank>OGARUCO</a> by CfS 川人さん(aka <a href=http://www.dappi.jp/ target=_blank>ダッピスタジオ</a>)<br>
+				</div>
 		<div id="pc">
 			<img src=img/flyer.jpg width=80%>
 		</div>

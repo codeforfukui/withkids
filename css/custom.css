@@ -84,6 +84,7 @@
 	left: 0.3rem;
 }
 .emergency_icon {
+	display: none;
 	float: right;
 	height: 2.5rem;
 	margin-top: 0.8rem;
@@ -123,4 +124,13 @@
 	#splash #mobile {
 		display: none;
 	}
+}
+.userView {
+	height: 136px;
+	background-image: url("../img/navimage3.jpg");
+	background-position: center center;
+	background-size: 100% auto;
+}
+#mobile a {
+	color: #333 !important;
 }

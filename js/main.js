@@ -1,7 +1,8 @@
-var defpos = [ 42.31804, 140.97418, "室蘭駅" ];
+var defpos = [ 35.862127, 136.367189, "TPA 池田町" ];
+//var defpos = [ 42.31804, 140.97418, "室蘭駅" ];
 //var defpos = [ 42.108813, 140.573886, "森町駅" ];
 //var defpos = [ 35.943406, 136.188597, "鯖江駅" ];
-var viewlen = 20;
+var viewlen = 200;
 var maxlen = 30;
 var dllpoi = 0.1;
 var dllemr = 0.01;
@@ -486,12 +487,12 @@ var addItemSpot = function(d, lat, lng) {
 //localStorage.setItem("withkids-init", "0");
 $(function() {
 	if ("1" != localStorage.getItem("withkids-init")) {
-		get("splash").style.display = "block";
-		get("splash").onclick = function() {
-			get("splash").style.display = "none";
-			localStorage.setItem("withkids-init", "1");
-		};
+		showSplash();
 	}
+	get("splash").onclick = function() {
+		get("splash").style.display = "none";
+		localStorage.setItem("withkids-init", "1");
+	};
 	
 	var hash = document.location.hash;
 	if (hash.length > 1) {
@@ -534,4 +535,13 @@ var loadItem = function() {
 	} else {
 		ignoreGPS();
 	}
+};
+var addToHome = function() {
+	alert("「ホーム画面へ追加」すると「WithKids」に、すぐにアクセスできますよ！");
+};
+var selectAge = function(min, max) {
+	alert(min + " " + max);
+};
+var showSplash = function() {
+	get("splash").style.display = "block";
 };
