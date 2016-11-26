@@ -167,12 +167,13 @@ var getNearWithGeo = function(lat, lng, size, callback) {
 };
 var getNearTypesWithGeoMulti = function(types, lat, lng, dll, size, callback) {
 	getNearTypesWithGeo(types, lat, lng, dll / 10, size * 2, function(d) {
+		alert(d.length);
 		if (d.length >= size) {
 			callback(d);
 			return;
 		}
 //		alert("/10 " + d.length + "<" + size);
-		getNearTypesWithGeo(types, lat, lng, dll / 3, size * 2, function(d) {
+		getNearTypesWithGeo(types, lat, lng, dll / 6, size * 2, function(d) {
 			if (d.length >= size / 2) {
 				callback(d);
 				return;
