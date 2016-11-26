@@ -2,84 +2,31 @@
 <html>
   <head>
   <meta charset="utf-8"/ >
-  <title>公共クラウドサンプル</title>
+  <title>Ikeda Town Spots</title>
   </head>
   <body> 
-  <p>Google Map Test</p>
-  <div id="map" style="width:1000px; height:500px"></div>
-  <input id="search" type="button" value="公共クラウドのデータ取得"></inout>
+  <p>池田町のスポット紹介 </p>
+  <div id="map" style="width:100vh; height:50vh"></div>
   <script type="text/javascript" src="testMap.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script type="application/javascript"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3infBvJeAdiM6KqqBTS0i5jCnzIDWp8o&callback=initMap" type="text/javascript"></script>
-  <script>
-     $(function(){
-
-     $('#search').click(function(){
-
-     /*
-     var genre = "公園";
-     var eURI = encodeURI(genre);
-
-
-     var URL = "https://www.chiikinogennki.soumu.go.jp/k-cloud-api/v001/kanko/"+eURI+"/json?"+encodeURI("limit=10");
-     */
-
-    var lat = 35.960442;
-    var lng = 136.204580;
-
-    var dll = 10;
-    var latmin = lat - dll;
-    var latmax = lat + dll;
-    var lngmin = lng - dll;
-    var lngmax = lng + dll;  
+<script>
+$(document).ready(function(){
 
     var baseurl = "https://sparql.odp.jig.jp/data/sparql";
      
-    var type = "http://odp.jig.jp/odp/1.0#TourSpot";
-//    var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
-     
-/*     var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
-             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
-  	     "select ?s ?location ?lat ?lng ?desc {\n" + 
-	          "?s rdf:type <" + type + ">;\n" +
-	          "odp:location ?location;\n" +
-		  "geo:lat ?lat;\n" +
-		  "geo:long ?lng.\n" +
-		  "optional { ?s <http://schema.org/description> ?desc }\n" +
-		  "filter(?lat < " + latmax + " && ?lat > " + latmin + " && ?lng < " + lngmax + " && ?lng > " + lngmin + ")\n" +
-			"filter(lang(?name) = 'ja')\n" +
-		"}";
-*/
- 
-	var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-             "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-	     "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
-	     "prefix jrrk: <http://purl.org/jrrk#>\n" +
-	     "select ?s ?name ?lat ?lng ?desc ?link ?img{\n" + 
-	          "graph ?graph {\n" + 
-		  "?s rdf:type <" + type + ">;\n" +
-		  "rdfs:label ?name;\n" +
-		  "geo:lat ?lat;\n" +
-		  "geo:long ?lng.\n" +
-		  "optional { ?s <http://schema.org/description> ?desc }\n" +
-		  "optional { ?s <http://schema.org/url> ?link }\n" +
-		  "optional { ?s <http://schema.org/image> ?img}\n" +
-		  "filter(?lat < " + latmax + " && ?lat > " + latmin + " && ?lng < " + lngmax + " && ?lng > " + lngmin + ")\n" +
-			"filter(lang(?name) = 'ja')\n" +
-			"}\n" +
-		"}";
-     
+//   var type = "http://odp.jig.jp/odp/1.0#TourSpot";
+//   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
+//   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
+     var type = "http://purl.org/jrrk#BusRoute";
 
-     //var tsName[];
-				      
-     var url = querySPARQL(baseurl,q,"?");
-//     alert(q); 
+     var url = querySPARQL(baseurl, setQuery(type), "?");
+
      $.getJSON(url,function(data){
 
-       var  items = data.results.bindings;
-//       alert(items.length);
+     var  items = data.results.bindings;
+ //     alert(items.length);
 
           for(i=0; i<items.length; i++){
 
@@ -91,22 +38,18 @@
 	       }
 	   console.log(dd)
 
-//	   setMakerVM(dd.location,dd.lat,dd.lng);
-          setMaker(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
-
+     if(getType(type)=="kc")				   
+	   setMaker(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
+     if(getType(type)=="vm")
+           setMakerVM(dd.location,dd.lat,dd.lng);
+     if(getType(type)=="ss")
+           setMarkerSS(dd.label,dd.lat,dd.lng);
+     if(getType(type)=="br")
+           setMarkerBR(dd.label,dd.lat,dd.lng);
+				   
           }
-
-/*		       
-     for(var i=0; i<data.tourspots.length; i++){
-
-	alert(data.tourspots[i].name.name1.written);				   
-      //tsName[i] = data.tourspots[i].name.name1.written;
-        '<th>'+data.tourspots[i].name.name1.written+'</th>'			     
-     }
-*/     
      });
-     });
-  });
+ });
 
 var querySPARQL = function(baseurl, q, callback) {
 	var url = baseurl + "?query=" + encodeURIComponent(q) + "&output=json";
@@ -114,6 +57,93 @@ var querySPARQL = function(baseurl, q, callback) {
        //jsonp(url);
        return url;					   
 };
+				   
+var getType = function(type) {
+	if (type == "http://odp.jig.jp/odp/1.0#TourSpot")
+		return "kc";
+	if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
+		return "vm";
+	if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
+		return "ss";
+	if (type == "http://purl.org/jrrk#BusRoute")
+		return "br";
+	if (type == "http://purl.org/jrrk#EmergencyFacility")
+		return "ef";
+	if (type == "http://purl.org/jrrk#PublicToilet")
+		return "pt";
+	if (type == "http://purl.org/jrrk#AED")
+		return "aed";
+        return type;
+};
+
+var setQuery = function(type){
+
+ if(getType(type) == "kc"){
+
+     var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+	     "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+	     "prefix jrrk: <http://purl.org/jrrk#>\n" +
+	     "select ?s ?name ?lat ?lng ?desc ?link ?img{\n" + 
+             "graph ?graph {\n" + 
+		  "?s rdf:type <" + type + ">;\n" +
+         	  "rdfs:label ?name;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		  "optional { ?s <http://schema.org/description> ?desc }\n" +
+		  "optional { ?s <http://schema.org/url> ?link }\n" +
+		  "optional { ?s <http://schema.org/image> ?img}\n" +
+		  "filter(?lat < " + latmax + " && ?lat > " + latmin + " && ?lng < " + lngmax + " && ?lng > " + lngmin + ")\n" +
+			"filter(lang(?name) = 'ja')\n" +
+			"}\n" +
+		      "}";
+ }
+
+ if(getType(type) == "vm"){
+
+     var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?location ?lat ?lng ?desc {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "odp:location ?location;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		  "optional { ?s <http://schema.org/description> ?desc }\n" +
+		"}";
+
+ }
+ if(getType(type) == "ss"){
+
+    var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+             "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?label ?lat ?lng {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "rdfs:label ?label;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+		"}";
+}
+ if(getType(type) == "br"){
+
+    var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+             "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+             "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
+             "prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>\n" +
+  	     "select ?s ?label ?lat ?lng {\n" + 
+	          "?s rdf:type <" + type + ">;\n" +
+	          "rdfs:label ?label;\n" +
+		  "geo:lat ?lat;\n" +
+		  "geo:long ?lng.\n" +
+                  "filter(lang(?name) = 'ja')\n" +		   
+		"}";
+ }
+				   
+  alert(q); 
+  return q;				   
+}
 </script> 
 </body>
 </html>
