@@ -6,18 +6,44 @@
   </head>
   <body style="background:#E6E6E6"> 
   <p >今どこ?池田マップ </p>
+  <tr><th><img border="1" src="img/red-dot.png" width="32" height="32"></th>
+    <th><img border="1" src="img/vendermachine.png" width="32" height="32"></th>
+    <th><img border="1" src="img/servicestation.png" width="32" height="32" onclick="changeType('http://odp.jig.jp/odp/1.0#ServiceStation')"></th>
+    <th><img border="1" src="img/busstop.png" width="32" height="32"></th>
+    <th><img border="1" src="img/toilet.png" width="32" height="32"></th>
+    <th><img border="1" src="img/wifi.png" width="32" height="32"></th>
+    <th><img border="1" src="img/aed.png" width="32" height="32"></th>
   <div id="map" style="width:100%; height:100%"></div>
   <script type="text/javascript" src="testMap.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script type="application/javascript"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3infBvJeAdiM6KqqBTS0i5jCnzIDWp8o&callback=initMap" type="text/javascript"></script>
 <script>
+
+var type;
+  
+var signal = [
+	{
+	lat: 35.8809431, lng: 136.3324298, img: "photo/IMG_7949.JPG", description: "国道417号線上、横断歩道なし"
+	}, {
+	lat: 35.8858721, lng: 136.3421958, img: "photo/IMG_7937.JPG", description: "こどもの練習用、通常時点滅、押しボタンあり、国道476号線x県道117号線",
+	}
+];
+
+var changeType = function(typeurl){
+
+ type = typeurl;
+ alert(type);
+ location.reload();
+}
+
 $(document).ready(function(){
 
     var baseurl = "https://sparql.odp.jig.jp/data/sparql";
      
 //   var type = "http://odp.jig.jp/odp/1.0#TourSpot";
-   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
+if(type==null)
+   type = "http://odp.jig.jp/odp/1.0#VendingMachine";
 //   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
 //     var type = "http://purl.org/jrrk#BusStop";
 //     var type = "http://purl.org/jrrk#EmergencyFacility";
@@ -27,8 +53,6 @@ $(document).ready(function(){
 //     var type = "?type";
 
      var url = querySPARQL(baseurl, setQuery(type), "?");
-
-     setGeoLocation();
 
      $.getJSON(url,function(data){
 
@@ -67,8 +91,16 @@ $(document).ready(function(){
      if(getType(type)=="aed")
            setMarkerBR(dd.label,dd.lat,dd.lng);
 
-  */
-         }				   
+*/
+				   
+      }
+      if(signal){
+        for(i=0; i<signal.length;i++){
+	  setMarker(signal[i].description,signal[i].lat,signal[i].lng,{url:"img/signal.png",
+                   scaledSize : new google.maps.Size(48, 18)});
+        }
+        } 
+     setGeoLocation();				   
      });
  });
 
@@ -300,3 +332,4 @@ var setIconImage = function(type){
 </script> 
 </body>
 </html>
+B
