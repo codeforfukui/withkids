@@ -42,12 +42,13 @@ function setMarkerTS(name,lat, lng, info, link){
 }
 
 /*名称と緯度・経度のみ表示*/
-function setMarker(label,lat, lng){
+function setMarker(label,lat, lng, img){
 
     var latlng = new google.maps.LatLng(lat,lng);
     var marker = new google.maps.Marker({
 	position: latlng,
-	map: map
+	map: map,
+	icon: img
     });
 
     var s = label; 
@@ -64,4 +65,39 @@ function setMarker(label,lat, lng){
 	infoWindow.close();
     });
 
+}
+/*GPSの位置表示*/
+function setGeoMarker(r, lat, lng){
+
+    var latlng = new google.maps.LatLng(lat,lng);
+    var marker = new google.maps.Marker({
+	position: latlng,
+	map: map,
+	icon:"img/group.jpg"
+    });
+    
+    google.maps.event.addListener(marker,'mouseover',function(){
+        infoWindow.open(map, marker);
+    });
+
+    google.maps.event.addListener(marker,'mouseout',function(){
+	infoWindow.close();
+    });
+
+    var infoWindow = new google.maps.InfoWindow({
+	content: "現在地"
+    });
+
+ /*   
+    new google.maps.Circle({
+         map: map,
+         center: latlng,
+         radius: 500, // 単位はメートル
+         strokeColor: '#0088ff',
+         strokeOpacity: 0.8,
+         strokeWeight: 1,
+         fillColor: '#0088ff',
+         fillOpacity: 0.2
+    });
+*/
 }
