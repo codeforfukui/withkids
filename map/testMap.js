@@ -1,4 +1,4 @@
-var map;
+
     
 function initMap(){
 
@@ -45,6 +45,10 @@ function setMarkerTS(name,lat, lng, info, link){
 function setMarker(label,lat, lng, img){
 
     var latlng = new google.maps.LatLng(lat,lng);
+/*    var image = {
+	url:img,
+	scaledSize : new google.maps.Size(28, 38)
+	}*/
     var marker = new google.maps.Marker({
 	position: latlng,
 	map: map,
@@ -70,10 +74,14 @@ function setMarker(label,lat, lng, img){
 function setGeoMarker(r, lat, lng){
 
     var latlng = new google.maps.LatLng(lat,lng);
+    var image = {
+	url:"img/group.jpg",
+	scaledSize : new google.maps.Size(32, 32)
+    }
     var marker = new google.maps.Marker({
 	position: latlng,
 	map: map,
-	icon:"img/group.jpg"
+	icon:image
     });
     
     google.maps.event.addListener(marker,'mouseover',function(){

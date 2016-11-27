@@ -17,8 +17,8 @@ $(document).ready(function(){
     var baseurl = "https://sparql.odp.jig.jp/data/sparql";
      
 //   var type = "http://odp.jig.jp/odp/1.0#TourSpot";
-//   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
-   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
+   var type = "http://odp.jig.jp/odp/1.0#VendingMachine";
+//   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
 //     var type = "http://purl.org/jrrk#BusStop";
 //     var type = "http://purl.org/jrrk#EmergencyFacility";
 //     var type = "http://purl.org/jrrk#PublicToilet";
@@ -138,8 +138,7 @@ var setQuery = function(type){
 		  "optional { ?s <http://schema.org/description> ?desc }\n" +
 		  "optional { ?s <http://schema.org/url> ?link }\n" +
 		  "optional { ?s <http://schema.org/image> ?img}\n" +
-		  "filter(?lat < " + latmax + " && ?lat > " + latmin + " && ?lng < " + lngmax + " && ?lng > " + lngmin + ")\n" +
-			"filter(lang(?name) = 'ja')\n" +
+		  "filter(lang(?name) = 'ja')\n" +
 			"}\n" +
 		      "}";
  }
@@ -280,7 +279,10 @@ var setGeoLocation = function(){
 var setIconImage = function(type){
 
 	if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
-		return "img/vendermachine.png";
+               return {
+ 		   url:"img/vendermachine.png",
+                   scaledSize : new google.maps.Size(28, 38)
+                }
 	if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
 		return "http://maps.google.co.jp/mapfiles/ms/icons/gas.png";
 	if (type == "http://purl.org/jrrk#BusStop")
