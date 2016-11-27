@@ -33,7 +33,7 @@ $(document).ready(function(){
      $.getJSON(url,function(data){
 
      var  items = data.results.bindings;
-     alert(items.length);
+//     alert(items.length);
 
           for(i=0; i<items.length; i++){
 
@@ -43,7 +43,7 @@ $(document).ready(function(){
 	       for(var n in temp){
                    dd[n] = temp[n].value; 
 	       }
-	  console.log(dd)
+//	  console.log(dd)
 //          alert(dd.type)
      var img = setIconImage(type);
 				   
@@ -246,7 +246,7 @@ var setQuery = function(type){
 
  }
 				   
-  alert(q); 
+//  alert(q); 
   return q;				   
 }
 
