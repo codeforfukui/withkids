@@ -129,6 +129,13 @@
 #mobile a {
 	color: #333 !important;
 }
+.appiconli a {
+	height: 8rem;
+}
+.appicon {
+	width: 8rem;
+	padding: 1.5rem;
+}
 @media only screen and (min-width: 666px) {
 	.emergency_icon {
 	    margin-right: 16rem;
