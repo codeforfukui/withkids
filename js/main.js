@@ -129,11 +129,11 @@ var getHTMLMap = function(lat, lng, lat2, lng2) {
 
 var getDataSrc = function(type) {
 	if (type == "http://purl.org/jrrk#CivicPOI")
-		return "観光オープンデータ";
+		return "観光オープンデータ on odp";
 	if (type == "http://odp.jig.jp/odp/1.0#TourSpot")
-		return "公共クラウド観光データ";
+		return "公共クラウド観光データ on odp";
 	if (type == "http://purl.org/jrrk#EmergencyFacility")
-		return "避難所";
+		return "避難所 on odp";
 	return type;
 };
 var getNearWithGeo = function(lat, lng, size, callback) {
@@ -210,7 +210,7 @@ var getNearTypesWithGeo = function(types, lat, lng, dll, size, callback, order) 
 		prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 		prefix schema: <http://schema.org/>
-		select ?s ?name ?desc ?descen ?link ?img ?lat ?lng ?type {
+		select ?s ?name ?desc ?descen ?link ?tel ?img ?lat ?lng ?type {
 			?s rdf:type ?type;
 				rdfs:label ?name;
 				geo:lat ?lat;
@@ -225,6 +225,7 @@ var getNearTypesWithGeo = function(types, lat, lng, dll, size, callback, order) 
 				filter(lang(?descen)="en")
 			}
 			optional { ?s <http://schema.org/url> ?link }
+			optional { ?s <http://schema.org/telephone> ?tel }
 			$FILTER$
 			filter(lang(?name)="$LANG$")
 			filter(xsd:float(?lat) < $LAT_MAX$ && xsd:float(?lat) > $LAT_MIN$ && xsd:float(?lng) < $LNG_MAX$ && xsd:float(?lng) > $LAT_MIN$)
@@ -275,7 +276,7 @@ var getSpotIkeda = function(callback) {
 		prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 		prefix schema: <http://schema.org/>
-		select ?s ?name ?desc ?descen ?link ?img ?lat ?lng ?type {
+		select ?s ?name ?desc ?descen ?link ?tel ?img ?lat ?lng ?type {
 			?s rdf:type ?type;
 				rdfs:label ?name;
 				<http://purl.org/jrrk#address> ?address;
@@ -291,6 +292,7 @@ var getSpotIkeda = function(callback) {
 				filter(lang(?descen)="en")
 			}
 			optional { ?s <http://schema.org/url> ?link }
+			optional { ?s <http://schema.org/telephone> ?tel }
 			$FILTER$
 			filter(lang(?name)="$LANG$")
 			filter(regex(?address, "福井県今立郡池田町"))
@@ -614,6 +616,14 @@ var loadItem = function() {
 var addToHome = function() {
 	alert("「ホーム画面へ追加」すると「WithKids」に、すぐにアクセスできますよ！");
 };
+var getTelLink = function(tel) {
+	if (tel == null)
+		return null;
+	return "<a href=tel:" + tel + ">" + tel + "</a>";
+};
+var getLinkWithIcon = function(name, link) {
+	return getLink(name + (link ? '<i class="material-icons">home</i>' : ""), link);
+};
 var selectAge = function(cate) {
 	if (!dataexp)
 		return;
@@ -743,17 +753,18 @@ var selectAge = function(cate) {
 		var img = poi && poi.img && poi.img.startsWith("https://") ? poi.img : null;
 		// d.img
 		addItem(d.name/*.substring(0, 6)*/, img, [
-			getLink(d.name + (d.link ? '<i class="material-icons">home</i>' : ""), d.link),
+			d.name,
 			getImageLink(poi ? poi.img : null),
-			d.place,
+			getLinkWithIcon(d.place, poi.link),
 			"料金：" + sprice,
 //			"優先順：" + d.point,
 			d.reserve == "要" ? "予約必要" : null,
+			getTelLink(poi.tel),
 			d.other,
 			d.desc,
 			d.descen,
 			poi && poi.lat ? getHTMLMap(lat, lng, poi.lat, poi.lng) : null,
-			getLink(getDataSrc(d.type), d.s),
+			getLink(getDataSrc(poi.type), poi.s),
 		], sprice, icon);
 	}
 };
