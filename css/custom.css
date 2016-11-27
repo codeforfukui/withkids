@@ -114,6 +114,21 @@
 #items a {
 	color: white;
 }
+.kidsicon {
+	height: 4rem;
+	padding-left: .5rem;
+	padding-top: 0.8rem;
+    margin-bottom: -.4rem;
+}
+.userView {
+	height: 136px;
+	background-image: url("../img/navimage3.jpg");
+	background-position: center center;
+	background-size: 100% auto;
+}
+#mobile a {
+	color: #333 !important;
+}
 @media only screen and (min-width: 666px) {
 	.emergency_icon {
 	    margin-right: 16rem;
@@ -125,13 +140,4 @@
 	#splash #mobile {
 		display: none;
 	}
-}
-.userView {
-	height: 136px;
-	background-image: url("../img/navimage3.jpg");
-	background-position: center center;
-	background-size: 100% auto;
-}
-#mobile a {
-	color: #333 !important;
 }

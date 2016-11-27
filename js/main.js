@@ -657,7 +657,7 @@ var selectAge = function(cate) {
 		"4才〜10才",
 		"11才〜"
 	];
-	get("logo-container").textContent = "WithKids / " + capcate[cate];
+	get("logo-container").innerHTML = "WithKids / " + capcate[cate] + "<img src=img/icon-kids" + cate + ".png class=kidsicon>";
 //	alert(min + " " + max);
 	clear("items");
 	var icon = null;
