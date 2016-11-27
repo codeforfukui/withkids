@@ -619,7 +619,7 @@ var addToHome = function() {
 var getTelLink = function(tel) {
 	if (tel == null)
 		return null;
-	return "<a href=tel:" + tel + ">" + tel + "</a>";
+	return "<i class=\"material-icons\">settings_phone</i><a href=tel:" + tel + ">" + tel + "</a>";
 };
 var getLinkWithIcon = function(name, link) {
 	return getLink(name + (link ? '<i class="material-icons">home</i>' : ""), link);
@@ -755,16 +755,16 @@ var selectAge = function(cate) {
 		addItem(d.name/*.substring(0, 6)*/, img, [
 			d.name,
 			getImageLink(poi ? poi.img : null),
-			getLinkWithIcon(d.place, poi.link),
+			getLinkWithIcon(d.place, poi ? poi.link : null),
 			"料金：" + sprice,
 //			"優先順：" + d.point,
 			d.reserve == "要" ? "予約必要" : null,
-			getTelLink(poi.tel),
+			getTelLink(poi ? poi.tel : null),
 			d.other,
 			d.desc,
 			d.descen,
 			poi && poi.lat ? getHTMLMap(lat, lng, poi.lat, poi.lng) : null,
-			getLink(getDataSrc(poi.type), poi.s),
+			"(" + (poi ? getLink(getDataSrc(poi.type), poi.s) : getLink("体験オープンデータ", "data/taiken.tsv")) + ")",
 		], sprice, icon);
 	}
 };
