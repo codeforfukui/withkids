@@ -47,12 +47,12 @@ function setMarker(label,lat, lng, img){
     var latlng = new google.maps.LatLng(lat,lng);
 /*    var image = {
 	url:img,
-	scaledSize : new google.maps.Size(28, 38)
+	scaledSize : new google.maps.Size(32, 32)
 	}*/
     var marker = new google.maps.Marker({
 	position: latlng,
 	map: map,
-	icon: img
+	icon:img
     });
 
     var s = label; 

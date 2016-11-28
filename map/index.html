@@ -1,6 +1,7 @@
 <!DOCTlYPE html>
 <html>
   <head>
+<<<<<<< Updated upstream
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta charset="utf-8"/ >
     <title>ウィズキッズ/WithKids</title>
@@ -19,14 +20,32 @@
        <th><img border="0" src="img/signal.png" width="36" height="12"></th>
     </tr>
   <div id="map" style="width:100%; height:100%"></div>
+=======
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8"/ >
+  <title>ウィズキッズ/WithKids</title>
+  </head>
+  <body style="background:#E6E6E6" >
+  <a href=../index.html style="color:black;font-size:80%;padding:4px 0px 4px 2px;display:block">&lt;&lt; WithKidsへ戻る</a>
+  <p >今どこ?池田マップ </p>
+  <tr><th><img border="0" src="http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png" width="32" height="32" onclick="setTypeID('ts')"></th>
+    <th><img border="0" src="../img/icon-vmachine.png" width="28" height="38" onclick="setTypeID('vm')"></th>
+    <th><img border="0" src="../img/icon-gs.png" width="31" height="38" onclick="setTypeID('gs')"></th>
+    <th><img border="0" src="http://maps.google.com/mapfiles/ms/micons/bus.png" width="32" height="32" onclick="setTypeID('bs')"></th>
+    <th><img border="0" src="../img/wc.png" width="32" height="32" onclick="setTypeID('wc')"></th>
+    <th><img border="0" src="" width="32" height="32" onclick="setTypeID('wifi')"></th>
+    <th><img border="0" src="img/aed.png" width="32" height="32" onclick="setTypeID('aed')"></th>
+    <th><img border="0" src="img/emergency.png" width="32" height="32" onclick="setTypeID('ef')"></th>
+<!--    <th><img border="0" src="../img/signal.png" width="36" height="12" align="center" valign="center" onclick="setTypeID('sg')"></th> -->
+  </tr>
+<div id="map" style="width:100%; height:100%; display:block"></div>
+>>>>>>> Stashed changes
   <script type="text/javascript" src="testMap.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script type="application/javascript"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3infBvJeAdiM6KqqBTS0i5jCnzIDWp8o&callback=initMap" type="text/javascript"></script>
 <script>
 
-var type;
-  
 var signal = [
      {
       lat: 35.8809431, lng: 136.3324298, img: "photo/IMG_7949.JPG", description: "国道417号線上、横断歩道なし"
@@ -35,31 +54,87 @@ var signal = [
      }
 ];
 
-var changeType = function(typeurl){
+/*　クエリをセットしてリロード　*/
+var setTypeID = function(typeId){
 
- type = typeurl;
- alert(type);
- location.reload();
+  window.location.search = typeId;
+}
+/*  URLからクエリ取得  */
+var getUrlQuery = function(){
+ 
+  return  window.location.search.substring(1);
 }
 
+var getUqueryToType = function(){
+
+  if(getUrlQuery() == "ts")
+     return "http://odp.jig.jp/odp/1.0#TourSpot";
+  if(getUrlQuery() == "vm")
+     return "http://odp.jig.jp/odp/1.0#VendingMachine";
+  if(getUrlQuery() == "gs")
+     return "http://odp.jig.jp/odp/1.0#ServiceStation";
+  if(getUrlQuery() == "bs")
+     return "http://purl.org/jrrk#BusStop";
+  if(getUrlQuery() == "ef")
+     return "http://purl.org/jrrk#EmergencyFacility";
+  if(getUrlQuery() == "wc")
+     return "http://purl.org/jrrk#PublicToilet";
+  if(getUrlQuery() == "aed")
+     return "http://purl.org/jrrk#AED";
+  if(getUrlQuery() == "wifi")
+     return "http://purl.org/jrrk#PublicWIFI";
+  if(getUrlQuery() == "sg")
+     return "signal"
+  else
+     return "http://odp.jig.jp/odp/1.0#VendingMachine";
+};
+
+
+var getTypeToUquery = function(type) {
+  if (type == "http://odp.jig.jp/odp/1.0#TourSpot")
+    return "ts";
+  if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
+    return "vm";
+  if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
+    return "gs";
+  if (type == "http://purl.org/jrrk#BusStop")
+    return "bs";
+  if (type == "http://purl.org/jrrk#EmergencyFacility")
+    return "ef";
+  if (type == "http://purl.org/jrrk#PublicToilet")
+    return "wc";
+  if (type == "http://purl.org/jrrk#AED")
+    return "aed";
+  if (type == "http://purl.org/jrrk#PublicWIFI")
+    return "wifi"		   
+  if (type == "signal")
+    return "sg"		   
+  else
+    return "err";
+};
+
+/* 信号機専用 */
+var setSignals = function(){
+      
+   for(i=0; i<signal.length;i++){
+       setMarker(signal[i].description,signal[i].lat,signal[i].lng,{url:"../img/icon-signal.png",
+       scaledSize : new google.maps.Size(48, 18)});
+    }
+      
+};
+	       
 $(document).ready(function(){
 
     var baseurl = "https://sparql.odp.jig.jp/data/sparql";
-     
-//   var type = "http://odp.jig.jp/odp/1.0#TourSpot";
-if(type==null)
-   type = "http://odp.jig.jp/odp/1.0#VendingMachine";
-//   var type = "http://odp.jig.jp/odp/1.0#ServiceStation";
-//     var type = "http://purl.org/jrrk#BusStop";
-//     var type = "http://purl.org/jrrk#EmergencyFacility";
-//     var type = "http://purl.org/jrrk#PublicToilet";
-//　　 var type = "http://purl.org/jrrk#AED";
-//     var type = "http://purl.org/jrrk#PublicWIFI";
-//     var type = "?type";
 
-     var url = querySPARQL(baseurl, setQuery(type), "?");
+    var type = getUqueryToType();
+    var uQuery = getTypeToUquery(type);
 
-     $.getJSON(url,function(data){
+//    alert(type+"  "+uQuery);
+
+    var url = querySPARQL(baseurl, setQuery(type, uQuery), "?");
+
+   $.getJSON(url,function(data){
 
      var  items = data.results.bindings;
 //     alert(items.length);
@@ -74,11 +149,11 @@ if(type==null)
 	       }
 //	  console.log(dd)
 //          alert(dd.type)
-     var img = setIconImage(type);
+     var img = setIconImage(getUqueryToType());
 				   
-     if(getType(type)=="kc")				   
+     if(uQuery == "ts")				   
          setMarkerTS(dd.name,dd.lat,dd.lng,dd.desc,dd.link);
-     else if(getType(type) == "vm") //自販機だけlabelがlocation
+     else if(uQuery == "vm") //自販機だけlabelがlocation
          setMarker(dd.location, dd.lat,dd.lng,img);
      else
          setMarker(dd.label, dd.lat,dd.lng,img);			   				   
@@ -95,19 +170,14 @@ if(type==null)
            setMarkerBR(dd.label,dd.lat,dd.lng);
      if(getType(type)=="aed")
            setMarkerBR(dd.label,dd.lat,dd.lng);
-
 */
-				   
       }
-      if(signal){
-        for(i=0; i<signal.length;i++){
-	  setMarker(signal[i].description,signal[i].lat,signal[i].lng,{url:"img/signal.png",
-                   scaledSize : new google.maps.Size(48, 18)});
-        }
-        } 
-     setGeoLocation();				   
-     });
- });
+
+   });
+    setSignals();
+    setGeoLocation();				   
+				   
+});
 
 var querySPARQL = function(baseurl, q, callback) {
 	var url = baseurl + "?query=" + encodeURIComponent(q) + "&output=json";
@@ -116,31 +186,14 @@ var querySPARQL = function(baseurl, q, callback) {
        return url;					   
 };
 				   
-var getType = function(type) {
-	if (type == "http://odp.jig.jp/odp/1.0#TourSpot")
-		return "kc";
-	if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
-		return "vm";
-	if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
-		return "ss";
-	if (type == "http://purl.org/jrrk#BusStop")
-		return "bs";
-	if (type == "http://purl.org/jrrk#EmergencyFacility")
-		return "ef";
-	if (type == "http://purl.org/jrrk#PublicToilet")
-		return "pt";
-	if (type == "http://purl.org/jrrk#AED")
-                return "aed";
-  	if (type == "http://purl.org/jrrk#PublicWIFI")
-		return "wifi"		   
-        if (type == "?type")
-		return "?type"		   
-        return type;
-};
 
-var setQuery = function(type){
+var setQuery = function(type, urlquery){
 
- if(getType(type) == "?type"){
+// var type = getUqueryToType();
+// var urlquery = getTypeToUquery(type);		    
+//alert(type+"  "+urlquery);
+		    
+ if(urlquery == "?type"){
 
     var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
@@ -160,7 +213,7 @@ var setQuery = function(type){
  
  }
 				   
- if(getType(type) == "kc"){
+ if(urlquery == "ts"){
 
      var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
              "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
@@ -180,7 +233,7 @@ var setQuery = function(type){
 		      "}";
  }
 
- if(getType(type) == "vm"){
+ if(urlquery == "vm"){
 
      var q = "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
              "prefix odp: <http://odp.jig.jp/odp/1.0#>\n" +
@@ -194,7 +247,7 @@ var setQuery = function(type){
 		"}";
 
  }
- if(getType(type) == "ss"){
+ if(urlquery == "gs"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -207,7 +260,7 @@ var setQuery = function(type){
 		  "geo:long ?lng.\n" +
 		"}";
 }
- if(getType(type) == "bs"){
+ if(urlquery == "bs"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -220,7 +273,7 @@ var setQuery = function(type){
 		  "geo:long ?lng.\n" +
 		"}";
  }
- if(getType(type) == "ef"){
+ if(urlquery == "ef"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -235,7 +288,7 @@ var setQuery = function(type){
 	          "address:address ?address.\n" +			   
 		"filter(regex(?address, '福井県今立郡池田町'))} limit 100";
  }
- if(getType(type) == "pt"){
+ if(urlquery == "wc"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -250,7 +303,7 @@ var setQuery = function(type){
 		  "}";		   
  }
 				   
- if(getType(type) == "aed"){
+ if(urlquery == "aed"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -266,7 +319,7 @@ var setQuery = function(type){
 		"filter(regex(?address, '福井県今立郡池田町'))} limit 100";
 
   }
- if(getType(type) == "wifi"){
+ if(urlquery == "wifi"){
 
     var q =  "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
              "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -279,9 +332,7 @@ var setQuery = function(type){
 		  "geo:lat ?lat;\n" +
 		  "geo:long ?lng;\n" +
                   "}";
-
-
- }
+}
 				   
 //  alert(q); 
   return q;				   
@@ -317,22 +368,40 @@ var setIconImage = function(type){
 
 	if (type == "http://odp.jig.jp/odp/1.0#VendingMachine")
                return {
- 		   url:"img/vendermachine.png",
+ 		   url:"../img/icon-vmachine.png",
                    scaledSize : new google.maps.Size(28, 38)
                 }
 	if (type == "http://odp.jig.jp/odp/1.0#ServiceStation")
-		return "http://maps.google.co.jp/mapfiles/ms/icons/gas.png";
+               return {
+ 		   url:"../img/icon-gs.png",
+                   scaledSize : new google.maps.Size(31, 38)
+                }
 	if (type == "http://purl.org/jrrk#BusStop")
-		return "http://maps.google.co.jp/mapfiles/ms/icons/bus.png";
+               return {
+ 		   url:"http://maps.google.com/mapfiles/ms/micons/bus.png",
+                   scaledSize : new google.maps.Size(32, 32)
+                }
 	if (type == "http://purl.org/jrrk#EmergencyFacility")
-		return "http://maps.google.co.jp/mapfiles/ms/icons/info.png";
+               return {
+ 		   url: "img/emergency.png",
+                   scaledSize : new google.maps.Size(32, 32)
+                }
 	if (type == "http://purl.org/jrrk#PublicToilet")
-		return "http://maps.google.co.jp/mapfiles/ms/icons/toilets.png";
+               return {
+ 		   url: "../img/icon-wc.png",
+                   scaledSize : new google.maps.Size(32, 32)
+                }
 	if (type == "http://purl.org/jrrk#AED")
-                return "img/aed.png";
+               return {
+ 		   url: "img/aed.png",
+                   scaledSize : new google.maps.Size(32, 32)
+                }
   	if (type == "http://purl.org/jrrk#PublicWIFI")
-		return "img/wifi.png"		   
-        return "img/red-dot.png";
+               return {
+ 		   url: "img/wifi.png",
+                   scaledSize : new google.maps.Size(32, 32)
+                }
+        return "http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png";
 }				   
 </script> 
 </body>
