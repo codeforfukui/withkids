@@ -5,19 +5,22 @@
   <meta charset="utf-8"/ >
   <title>ウィズキッズ/WithKids</title>
   </head>
-  <body style="background:#E6E6E6" >
-  <a href=../index.html style="color:black;font-size:80%;padding:4px 0px 4px 2px;display:block">&lt;&lt; WithKidsへ戻る</a>
-  <p >今どこ?池田マップ </p>
-  <tr><th><img border="0" src="http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png" width="32" height="32" onclick="setTypeID('ts')"></th>
+  <body style="background:#fff" >
+  <div style="padding:0px 0px 0px 8px;display:block;border-color:#cdcdcd;border-style:ridge;border-width:1">  
+  <a href=../index.html style="color:#e13b84;font-size:80%;padding:4px 0px 4px 2px;display:block">&lt;&lt; WithKidsへ戻る</a>
+  <p style="font-weight:bold;font-size:120%;color:#e13b84">今どこ?池田マップ</p>
+  <tr>
+    <th><img border="0" src="http://maps.google.co.jp/mapfiles/ms/icons/red-dot.png" width="32" height="32" onclick="setTypeID('ts')"></th>
     <th><img border="0" src="../img/icon-vmachine.png" width="28" height="38" onclick="setTypeID('vm')"></th>
     <th><img border="0" src="../img/icon-gs.png" width="31" height="38" onclick="setTypeID('gs')"></th>
     <th><img border="0" src="http://maps.google.com/mapfiles/ms/micons/bus.png" width="32" height="32" onclick="setTypeID('bs')"></th>
-    <th><img border="0" src="../img/wc.png" width="32" height="32" onclick="setTypeID('wc')"></th>
-    <th><img border="0" src="" width="32" height="32" onclick="setTypeID('wifi')"></th>
+    <th><img border="0" src="../img/icon-wc.png" width="32" height="32" onclick="setTypeID('wc')"></th>
+    <th><img border="0" src="img/wifi.png" width="32" height="32" onclick="setTypeID('wifi')"></th>
     <th><img border="0" src="img/aed.png" width="32" height="32" onclick="setTypeID('aed')"></th>
     <th><img border="0" src="img/emergency.png" width="32" height="32" onclick="setTypeID('ef')"></th>
 <!--    <th><img border="0" src="../img/signal.png" width="36" height="12" align="center" valign="center" onclick="setTypeID('sg')"></th> -->
   </tr>
+  </div>
 <div id="map" style="width:100%; height:100%; display:block"></div>
   <script type="text/javascript" src="testMap.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
