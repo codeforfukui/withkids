@@ -1,5 +1,5 @@
-##WithKids
-ウィズキッズ
+##WithKids  
+ウィズキッズ  
 https://codeforfukui.github.io/withkids/  
 
 ##スペシャルサンクス
