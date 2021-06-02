@@ -1,7 +1,6 @@
 ## WithKids
 
-- [ウィズキッズ](https://code4fukui.github.io/withkids/)
-    福井県池田町のこども向けアクティビティーを楽しめる年齢別で探せるアプリ！  
+[ウィズキッズ](https://code4fukui.github.io/withkids/)は、福井県池田町のこども向けアクティビティーを楽しめる年齢別で探せるアプリです。
 
 ## スペシャルサンクス
 
